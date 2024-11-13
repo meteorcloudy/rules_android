@@ -7,6 +7,45 @@ local_repository(
 )
 # --SNIP--: Everything below this line goes into the example WORKSPACE snippet in the release notes.
 
+http_archive(
+    name = "android_tools",
+    sha256 = "d7cdfc03f3ad6571b7719f4355379177a4bde68d17dca2bdbf6c274d72e4d6cf",  # DO_NOT_REMOVE_THIS_ANDROID_TOOLS_UPDATE_MARKER
+    url = "https://mirror.bazel.build/bazel_android_tools/android_tools_pkg-0.31.0.tar",
+)
+
+# rules_shell
+http_archive(
+  name = "rules_shell",
+  urls = ["https://github.com/bazelbuild/rules_shell/releases/download/v0.2.0/rules_shell-v0.2.0.tar.gz"],
+  integrity = "sha256-QQ6P8y4Bi579J0NQfnWVwm4mKFZ8QiJEEf9TO1fSfCg=",
+  strip_prefix = "rules_shell-0.2.0",
+  remote_file_urls = {},
+  remote_file_integrity = {},
+  remote_patches = {"https://bcr.bazel.build/modules/rules_shell/0.2.0/patches/module_dot_bazel_version.patch": "sha256-bv3DFdWeINNaHKWkywFQPg7aVmCHZI2OZccz4nhABkw="},
+  remote_patch_strip = 1,
+)
+
+# protobuf
+http_archive(
+  name = "com_google_protobuf",
+  urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v29.0-rc2/protobuf-29.0-rc2.zip"],
+  integrity = "sha256-IwgtyhynOh6cbL5ACXtB6B9x87TWIB42wTSswwobNmA=",
+  strip_prefix = "protobuf-29.0-rc2",
+  remote_file_urls = {},
+  remote_file_integrity = {},
+  remote_patches = {"https://bcr.bazel.build/modules/protobuf/29.0-rc2.bcr.1/patches/java_library_load.patch": "sha256-RqbB1Mho88jPxrCdps3bNt/7BWKusNDJOm+14xUcFrI="},
+  remote_patch_strip = 1,
+)
+
+# rules_java
+http_archive(
+    name = "rules_java",
+    urls = [
+        "https://github.com/bazelbuild/rules_java/releases/download/8.3.2/rules_java-8.3.2.tar.gz",
+    ],
+    sha256 = "9b9614f8a7f7b7ed93cb7975d227ece30fe7daed2c0a76f03a5ee37f69e437de",
+)
+
 # rules_license
 http_archive(
     name = "rules_license",
@@ -26,6 +65,10 @@ http_archive(
     sha256 = RULES_JVM_EXTERNAL_SHA,
     url = "https://github.com/bazelbuild/rules_jvm_external/releases/download/%s/rules_jvm_external-%s.tar.gz" % (RULES_JVM_EXTERNAL_TAG, RULES_JVM_EXTERNAL_TAG)
 )
+
+load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
+rules_java_dependencies()
+rules_java_toolchains()
 
 # bazel_features
 BAZEL_FEATURES_VERSION = "1.20.0"
@@ -67,6 +110,7 @@ load("@rules_android//rules:rules.bzl", "android_sdk_repository")
 android_sdk_repository(
     name = "androidsdk",
 )
+
 
 register_toolchains(
     "@rules_android//toolchains/android:android_default_toolchain",
